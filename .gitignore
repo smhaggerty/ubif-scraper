@@ -1,0 +1,8 @@
+ubif_scraper/.scrapy
+gui.py
+notes.txt
+ubif_scraper/.DS_Store
+ubif_scraper/ubif_scraper/__pycache__
+ubif_scraper/ubif_scraper/.DS_Store
+ubif_scraper/ubif_scraper/spiders/.DS_Store
+ubif_scraper/ubif_scraper/spiders/__pycache__
