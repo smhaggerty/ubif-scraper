@@ -1,8 +1,12 @@
+.DS_Store
 ubif_scraper/.scrapy
 gui.py
 notes.txt
+output.json
+sorted_output.json
 ubif_scraper/.DS_Store
 ubif_scraper/ubif_scraper/__pycache__
 ubif_scraper/ubif_scraper/.DS_Store
 ubif_scraper/ubif_scraper/spiders/.DS_Store
 ubif_scraper/ubif_scraper/spiders/__pycache__
+ubif_scraper/ubif_scraper/spiders/ouput.json
