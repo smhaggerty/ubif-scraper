@@ -3,13 +3,17 @@ import scrapy
 from time import ctime
 from scrapy.spiders import Spider
 
+
 class URLItem(scrapy.Item):
-    url = scrapy.Field()
+
+    name = scrapy.Field()
     price = scrapy.Field()
     date = scrapy.Field()
+    url = scrapy.Field()
 
-# TODO: ipod and computer-repair craw does not reach proper depth, search for "computer-repair" and "ipod" in output file
+
 class MainSpider(Spider):
+    
     name = "main"
     allowed_domains = ['www.ubreakifix.com']
     start_urls = ['https://www.ubreakifix.com/iphone-repair',
@@ -37,6 +41,11 @@ class MainSpider(Spider):
 
     def parse_repair_page(self, response):
         price = response.css('.product-price::text').extract_first()
+        url = response.url
         item = URLItem()
-        item['url'], item['price'], item['date'] = response.url, price, ctime()
+        item['name'], item['price'], item['date'], item['url']  = self.get_name_from_url(url), price, ctime(), url
         return item
+
+    def get_name_from_url(self, url):
+        device_name_list = url.split("/")[-2].split("-")
+        return " ".join(device_name_list[:-1])

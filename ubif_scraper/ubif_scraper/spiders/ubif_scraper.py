@@ -5,10 +5,11 @@ from scrapy.spiders import Spider
 
 
 class URLItem(scrapy.Item):
-    
-    url = scrapy.Field()
+
+    name = scrapy.Field()
     price = scrapy.Field()
     date = scrapy.Field()
+    url = scrapy.Field()
 
 
 class MainSpider(Spider):
@@ -40,6 +41,11 @@ class MainSpider(Spider):
 
     def parse_repair_page(self, response):
         price = response.css('.product-price::text').extract_first()
+        url = response.url
         item = URLItem()
-        item['url'], item['price'], item['date'] = response.url, price, ctime()
+        item['name'], item['price'], item['date'], item['url']  = self.get_name_from_url(url), price, ctime(), url
         return item
+
+    def get_name_from_url(self, url):
+        device_name_list = url.split("/")[-2].split("-")
+        return " ".join(device_name_list[:-1])

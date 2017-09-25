@@ -1,10 +1,9 @@
 import json
 
-# open the unsorted json data
 with open('output.json') as data_file:
     data = json.load(data_file)
-# sort json by url
-data['repairs'] = sorted(data['repairs'], key=lambda x : x['url'])
+
+data = sorted(data, key=lambda x : x['url'])
 # dump dict to json string
 json_string = json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
 # save sorted json as sorted_output.json
