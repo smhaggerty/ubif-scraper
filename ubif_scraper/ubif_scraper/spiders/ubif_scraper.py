@@ -41,6 +41,8 @@ class MainSpider(Spider):
 
     def parse_repair_page(self, response):
         price = response.css('.product-price::text').extract_first()
+        if price == None:
+            price = "Price not available online"
         url = response.url
         item = URLItem()
         item['name'], item['price'], item['date'], item['url']  = self.get_name_from_url(url), price, ctime(), url
