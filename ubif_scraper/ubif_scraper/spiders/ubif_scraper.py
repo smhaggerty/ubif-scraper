@@ -5,15 +5,14 @@ from scrapy.spiders import Spider
 
 
 class URLItem(scrapy.Item):
-
     name = scrapy.Field()
+    repair = scrapy.Field()
     price = scrapy.Field()
     date = scrapy.Field()
     url = scrapy.Field()
 
 
 class MainSpider(Spider):
-    
     name = "main"
     allowed_domains = ['www.ubreakifix.com']
     start_urls = ['https://www.ubreakifix.com/iphone-repair',
@@ -40,14 +39,19 @@ class MainSpider(Spider):
                 yield scrapy.Request(url=url, callback=self.parse)
 
     def parse_repair_page(self, response):
+        item = URLItem()
         price = response.css('.product-price::text').extract_first()
         if price == None:
             price = "Price not available online"
-        url = response.url
-        item = URLItem()
-        item['name'], item['price'], item['date'], item['url']  = self.get_name_from_url(url), price, ctime(), url
+        item['repair'] = self.get_repair_from_response(response)
+        item['name'] = self.get_name_from_url(response.url)
+        item['price'], item['date'], item['url'] = price, ctime(), response.url
         return item
 
     def get_name_from_url(self, url):
         device_name_list = url.split("/")[-2].split("-")
         return " ".join(device_name_list[:-1])
+
+    def get_repair_from_response(self, response):
+        repair = response.xpath("//*[@id='product-info-container']/div/div[2]/h1/text()").extract_first()
+        return repair
