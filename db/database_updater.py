@@ -2,11 +2,11 @@ import sqlite3
 import json
 
 # connect to database and setup cursor
-db = sqlite3.connect("prices.db")
+db = sqlite3.connect("repairs.db")
 cursor = db.cursor()
 
 # import the price data json file
-with open('repairs.json') as data_file:
+with open('../ubif_scraper/ubif_scraper/spiders/repairs.json') as data_file:
     prices = json.load(data_file)
 
 # loop through each price in the json file
