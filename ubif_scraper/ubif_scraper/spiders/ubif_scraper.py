@@ -73,7 +73,7 @@ class MainSpider(Spider):
     def get_name(self, url):
         name_list = url.split("/")[-1].split("-")[:-1]
         name_list = [word.capitalize() for word in name_list]
-        name_list = [word.replace('Iphone', 'iPhone').replace('Ipod', 'iPod') for word in name_list]
+        name_list = [word.replace('Iphone', 'iPhone').replace('Ipod', 'iPod').replace('Ipad', 'iPad') for word in name_list]
         return " ".join(name_list)
 
     def find_repair_start_index(self, caption):
