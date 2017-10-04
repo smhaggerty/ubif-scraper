@@ -2,9 +2,10 @@
 import scrapy
 from time import ctime
 from scrapy.spiders import Spider
+import re
 
 
-class URLItem(scrapy.Item):
+class Item(scrapy.Item):
     name = scrapy.Field()
     repair = scrapy.Field()
     price = scrapy.Field()
@@ -13,6 +14,8 @@ class URLItem(scrapy.Item):
 
 
 class MainSpider(Spider):
+
+
     name = "main"
     allowed_domains = ['www.ubreakifix.com']
     start_urls = ['https://www.ubreakifix.com/iphone-repair',
@@ -27,31 +30,56 @@ class MainSpider(Spider):
                   'https://www.ubreakifix.com/game-console-repair',
                   'https://www.ubreakifix.com/ipod-repair',
                   'https://www.ubreakifix.com/tablet-repair',
-                  'https://www.ubreakifix.com/computer-repair']
+                  'https://www.ubreakifix.com/computer-repair',
+                  'https://www.ubreakifix.com/iphone-repair']
 
     def parse(self, response):
-        urls = response.xpath('/html/body/div[6]/div[1]/div[2]/section/div/div[2]/div[2]/div/div/a/@href').extract()
-        if urls == []:
-            yield self.parse_repair_page(response)
-        else:
+        if response.xpath("/html/body/div[5]/div[1]/div[2]/section/div/div[2]/div[3]/div/div/a[2]") == []:
+            urls = response.xpath("/html/body/div[5]/div[1]/div[2]/section/div/div[2]/div[2]/div/div/a/@href").extract()
             for url in urls:
                 url = response.urljoin(url)
                 yield scrapy.Request(url=url, callback=self.parse)
 
-    def parse_repair_page(self, response):
-        item = URLItem()
-        price = response.css('.product-price::text').extract_first()
-        if price == None:
+        else:
+            repairs = response.xpath(
+                "/html/body/div[5]/div[1]/div[2]/section/div/div[2]/div[3]/div/div/a[2]/figure/figcaption").extract()
+            for caption in repairs:
+                item = Item()
+                item['price'], item['repair'] =  self.caption_handler(caption)
+                item['name'] = self.get_name(response.url)
+                item['repair'] = item['name'] + " " + item['repair']
+                item['date'], item['url'] = ctime(), response.url
+                yield item
+
+    def caption_handler(self, caption):
+        price = self.find_price(caption)
+        caption = caption[15:]
+        repair_start_index = self.find_repair_start_index(caption)
+        repair_stop_index = self.find_repair_stop_index(caption)
+        repair = re.sub("&amp;", "&", caption[repair_start_index:repair_stop_index])
+        return price, repair
+
+    def find_price(self, caption):
+        price = ""
+        if caption.find("Quote") != -1:
             price = "Price not available online"
-        item['repair'] = self.get_repair_from_response(response)
-        item['name'] = self.get_name_from_url(response.url)
-        item['price'], item['date'], item['url'] = price, ctime(), response.url
-        return item
+        elif caption.find("Free") != -1:
+            price = "Free"
+        elif caption.find("$") != -1:
+            price_index = caption.find("$")
+            price = re.sub("[a-zA-z</\s]", "", caption[price_index:price_index + 8])
+        return price
 
-    def get_name_from_url(self, url):
-        device_name_list = url.split("/")[-2].split("-")
-        return " ".join(device_name_list[:-1])
+    def get_name(self, url):
+        name_list = url.split("/")[-1].split("-")[:-1]
+        name_list = [word.capitalize() for word in name_list]
+        name_list = [word.replace('Iphone', 'iPhone').replace('Ipod', 'iPod') for word in name_list]
+        return " ".join(name_list)
 
-    def get_repair_from_response(self, response):
-        repair = response.xpath("//*[@id='product-info-container']/div/div[2]/h1/text()").extract_first()
-        return repair
+    def find_repair_start_index(self, caption):
+        capital_indexes = [i for i, j in enumerate(caption) if j.isupper()]
+        return capital_indexes[0]
+
+    def find_repair_stop_index(self, caption):
+        i = caption.find('\n')
+        return i
