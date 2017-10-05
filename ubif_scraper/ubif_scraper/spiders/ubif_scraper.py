@@ -75,7 +75,7 @@ class MainSpider(Spider):
     def get_name(self, url):
         name_list = url.split("/")[-1].split("-")[:-1]
         name_list = [word.capitalize() for word in name_list]
-        name_list = [word.replace('Iphone', 'iPhone').replace('Ipod', 'iPod').replace('Ipad', 'iPad').replace('Se', 'SE') for word in name_list]
+        name_list = [word.replace('Iphone', 'iPhone').replace('Ipod', 'iPod').replace('Ipad', 'iPad').replace('Se', 'SE').replace('Pc', 'PC') for word in name_list]
         return " ".join(name_list)
 
     def find_repair_start_index(self, caption):
@@ -93,12 +93,22 @@ class MainSpider(Spider):
             "Battery": "ubif-icons/battery.png",
             "Charge": "ubif-icons/charge-port.png",
             "Headphone": "ubif-icons/headphone.png",
-            "Water": "ubif-icons/water-damage-diagnostic.png",
+            "Water": "ubif-icons/water-damage.png",
             "Diagnostic": "ubif-icons/diagnostic.png",
             "Glass": "ubif-icons/glass.png",
-            "Camera": "ubif-icons/camera.png",
+            "Camera": "ubif-icons/camera-red.png",
             "Virus": "ubif-icons/virus.png",
-            "Hard": "ubif-icons/hard-drive.png"
+            "Hard": "ubif-icons/hard-drive.png",
+            "Memory": "ubif-icons/memory.png",
+            "Loud": "ubif-icons/loudspeaker.png",
+            "Home": "ubif-icons/home-button.png",
+            "Power": "ubif-icons/power-button.png",
+            "Volume": "ubif-icons/volume.png",
+            "Microphone": "ubif-icons/microphone.png",
+            "Vibrator": "ubif-icons/vibrator.png",
+            "Ear": "ubif-icons/earspeaker.png",
+            "& Back": "ubif-icons/front-back-glass.png",
+            "Back Cover": "ubif-icons/back-cover.png"
         }
 
         for term in icon_paths.keys():
