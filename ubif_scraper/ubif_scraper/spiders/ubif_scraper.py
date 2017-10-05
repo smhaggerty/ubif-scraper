@@ -97,6 +97,8 @@ class MainSpider(Spider):
             "Diagnostic": "ubif-icons/diagnostic.png",
             "Glass": "ubif-icons/glass.png",
             "Camera": "ubif-icons/camera.png",
+            "Virus": "ubif-icons/virus.png",
+            "Hard": "ubif-icons/hard-drive.png"
         }
 
         for term in icon_paths.keys():
