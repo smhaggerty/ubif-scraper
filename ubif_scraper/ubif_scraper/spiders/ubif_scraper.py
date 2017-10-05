@@ -11,6 +11,7 @@ class Item(scrapy.Item):
     price = scrapy.Field()
     date = scrapy.Field()
     url = scrapy.Field()
+    logo = scrapy.Field()
 
 
 class MainSpider(Spider):
@@ -46,6 +47,7 @@ class MainSpider(Spider):
             for caption in repairs:
                 item = Item()
                 item['price'], item['repair'] =  self.caption_handler(caption)
+                item['logo'] = self.get_logo_path(item['repair'])
                 item['name'] = self.get_name(response.url)
                 item['repair'] = item['name'] + " " + item['repair']
                 item['date'], item['url'] = ctime(), response.url
@@ -73,7 +75,7 @@ class MainSpider(Spider):
     def get_name(self, url):
         name_list = url.split("/")[-1].split("-")[:-1]
         name_list = [word.capitalize() for word in name_list]
-        name_list = [word.replace('Iphone', 'iPhone').replace('Ipod', 'iPod').replace('Ipad', 'iPad') for word in name_list]
+        name_list = [word.replace('Iphone', 'iPhone').replace('Ipod', 'iPod').replace('Ipad', 'iPad').replace('Se', 'SE') for word in name_list]
         return " ".join(name_list)
 
     def find_repair_start_index(self, caption):
@@ -83,3 +85,20 @@ class MainSpider(Spider):
     def find_repair_stop_index(self, caption):
         i = caption.find('\n')
         return i
+
+    def get_logo_path(self, repair):
+        icon_paths = {
+            "&": "ubif-icons/glass-lcd.png",
+            "LCD": "ubif-icons/lcd.png",
+            "Battery": "ubif-icons/battery.png",
+            "Charge": "ubif-icons/charge-port.png",
+            "Headphone": "ubif-icons/headphone.png",
+            "Water": "ubif-icons/water-damage-diagnostic.png",
+            "Diagnostic": "ubif-icons/diagnostic.png",
+            "Glass": "ubif-icons/glass.png",
+            "Camera": "ubif-icons/camera.png",
+        }
+
+        for term in icon_paths.keys():
+            if term in repair:
+                return icon_paths[term]
