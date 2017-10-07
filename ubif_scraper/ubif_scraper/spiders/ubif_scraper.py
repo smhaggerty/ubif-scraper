@@ -96,6 +96,7 @@ class MainSpider(Spider):
             "Water": "ubif-icons/water-damage.png",
             "Diagnostic": "ubif-icons/diagnostic.png",
             "Glass": "ubif-icons/glass.png",
+            "Screen": "ubif-icons/glass.png",
             "Camera": "ubif-icons/camera-red.png",
             "Virus": "ubif-icons/virus.png",
             "Hard": "ubif-icons/hard-drive.png",
@@ -108,7 +109,8 @@ class MainSpider(Spider):
             "Vibrator": "ubif-icons/vibrator.png",
             "Ear": "ubif-icons/earspeaker.png",
             "& Back": "ubif-icons/front-back-glass.png",
-            "Back Cover": "ubif-icons/back-cover.png"
+            "Back Cover": "ubif-icons/back-cover.png",
+            "Disc": "ubif-icons/disc-drive.png"
         }
 
         for term in icon_paths.keys():
