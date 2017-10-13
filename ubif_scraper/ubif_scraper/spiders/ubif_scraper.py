@@ -110,7 +110,10 @@ class MainSpider(Spider):
             "Ear": "ubif-icons/earspeaker.png",
             "& Back": "ubif-icons/front-back-glass.png",
             "Back Cover": "ubif-icons/back-cover.png",
-            "Disc": "ubif-icons/disc-drive.png"
+            "Back Housing" : "ubif-icons/back-cover.png",
+            "Disc": "ubif-icons/disc-drive.png",
+            "Wheel": "ubif-icons/click-wheel.png",
+            "Complete": "ubif-icons/complete.png"
         }
 
         for term in icon_paths.keys():
